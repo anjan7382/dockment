@@ -212,6 +212,27 @@ apt install openjdk-8-jdk
 apt-get install jenkins
 service jenkins status
 
+                                   sonarqube installation steps
+                                   ----------------------------
+#Login with root user and run below commands
+
+sudo su -
+apt update
+apt install -y default-jdk unzip
+exit
+
+#Login with Non-Root User and run below commands(ubuntu)
+
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.8.0.63668.zip -O sonarqube.zip
+unzip sonarqube.zip 
+ls -lart
+mv sonarqube-9.8.0.63668 sonarqube
+rm sonarqube.zip
+cd sonarqube/bin/linux-x86-64/
+./sonar.sh start
+
+#Then Start Accessing SonarQube using URL 	http://<IP-Address>:9000
+
 
 
 
