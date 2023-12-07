@@ -1,0 +1,216 @@
+git commands:
+
+git add . : it is used to untracked files to tracked files
+git commit -m " commit name" : Commit changes
+git push origin main : Push changes to remote repository
+git branch: to see current branch
+git branch branch name : to add a new branch
+git checkout branch name: to switch to branch
+git checkout -b branch name: to create and switch at a time
+git branch -m old name : to remove a branch
+git branch -d branch name : to delete a branch
+git restore : it is used to restore all deleted files
+git merge : it is uesd to merge two branches
+
+---------------------------------------------------------------------------------------
+
+maven: it is a build used to convert the source into war or jar files
+
+1.take a repository from google
+2.clone into that repo
+3.enter into that repo
+4.install maven : apt install maven
+5.to check the version : mvn --version
+install java : apt install openjdk11
+
+maven life cycle :-
+
+mvn compile: compile the source code of the project
+mvn test :test the complie source code using suitable test cases
+mvn clean package : take the source code and package it into distributed fromat such war or jar file.
+mvn clean install : install packages locally to be used as dependencies for other projects
+
+--------------------------------------------------------------------------------------------------------
+                                                   DOCKER
+                                                   -------
+
+
+DOCKER ARCHITECTURE :- https://www.whizlabs.com/blog/docker-architecture-in-detail/ 
+
+Docker : docker is an opensource platform that unables developers to build,deploy,run,update and manage containers
+Docker image : it is a file used to execute code in a docker container (or) set of instructions to build a container
+docker container : runnable instance of an image
+docker demon : docker demon is a service that creates and manages the docker images by using the command from the client
+docker host : the server which docker demon runs called docker host.
+
+COMMANDS:-
+
+to install docker :- apt install docker.io
+docker pull <image name> 
+docker images  :—used to see the docker download images
+docker build -t <imagename> . :—-to build docker image
+docker run -itd <image name/image id> :- to create a container  
+To enter into the container :– docker exec -it <container ID> /bin/bash
+To see docker images :– docker images
+To see running Containers :– docker ps
+to see all containers :- docker ps -a
+to start the stopped container :- docker start container id
+to stop the container :- docker stop container id
+docker rm container id :- to delete the container
+docker login ;- used to login into docker hub via command line
+docker push username of dockerhub/image name :- to push the image into docker hub
+
+DOCKERFILE:-
+
+1.FROM : To pull the base image
+2.RUN : To execute linux/bash commands
+3.CMD : To Provide defaults for an existing container
+4.ENTRYPOINT : To config a container that will run as an executable ( JAVA SCRIPT )
+5.WORKDIR : To sets the working directory
+6.COPY : To copy a directory from ur local machine to docker container
+7.ADD : To copy a file and folders from ur local machine to docker container
+           EX: Github,Tomcat
+8.EXPOSE:Informs docker that container listen on the specified network port at runtime
+
+FROM :-       openjdk:11
+ARG :-        JAR_FILE=target/*.jar
+COPY :-       ${JAR_FILE} app.jar
+ENTRYPOINT :- ["java","-jar","/app.jar"] 
+
+FROM openjdk:11: This line specifies the base Docker image to use for your application. In this case,
+                 it's an official OpenJDK 11 image, which provides a Java runtime environment.
+
+ARG JAR_FILE=target/*.jar: Here, you are defining an argument called JAR_FILE. This argument allows you to pass the name
+                           of the JAR file you want to copy into the Docker image when you build it.
+                           It defaults to any JAR file located in the target directory of your project.
+
+COPY ${JAR_FILE} app.jar: This line copies the JAR file specified by the JAR_FILE argument from your local file system  into the Docker image. 
+                          It renames the copied JAR file to app.jar within the image.
+
+ENTRYPOINT ["java","-jar","/app.jar"]: This is the entry point for the Docker container. It specifies that when the container starts, 
+                                       it should execute the Java command to run the JAR file (app.jar) as the main application.
+
+DOCKER ARCHITECTURE :- https://www.whizlabs.com/blog/docker-architecture-in-detail/ 
+                                            
+                                            
+ 
+   
+
+-------------------------------------------------------------------------------------------------------
+
+KUBERNETES:- kubernetes is an open source container management tool which automates container deployment,container scaling
+             and load balancing.
+kubernetes servers :- 1)load balancer
+                      2) node port
+                      3)cluster ip
+kubernetes components:-1)Api server (Kube API server or frontend Kubernetes control plane is the method of how the users interact with Kubernetes clusters)
+                       2)Etcd (backup store for all cluster data)
+                       3)schuduler (Kube scheduler is the Kubernetes master component that deals with assigning Pods to the Nodes.)
+                       4)contoller manager 
+types of load balancers:-1)application load balancer
+                         2)nerwork load balancer
+                         3)gateway load balancer
+load balancer:- it is used to allow incoming traffic equally to the servers
+
+COMMANDS:-
+
+kubectl apply -f file.yml :- apply(used to crete or update resources)
+                             -f (specifies that the configuration is provided ina file)
+kubectl crete -f file.yml :- it will create a deployment using configuration specified in the file.
+kubectl get deployment : it gives information about deployment
+kubectl get pods : list all pods running inthe current name space
+kubectl describe pods [pod-name] :-View details about a particular pod
+kubectl describe pods :-Show details about all pods
+kubectl delete pods --all :- Remove all pods 
+kubectl logs [pod-name]:- to print logs from containers in a pod, use the kubectl logs command
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+                                          ANSIBLE ( configuration managenment tool )
+
+ANSIBLE :- Ansible is an open-source automation tool used for configuration management, application deployment, and task automation
+                                          
+- name : Configure Docker on EC2 Instances
+  hosts : all
+  become: true
+  connection : ssh
+  tasks : 
+  - name: updating apt
+    command : sudo apt-get update
+
+  - name : Install Docker
+    command : sudo apt-get install -y docker.io
+    become : yes
+    become_user : root
+
+  - name : Start Docker Service
+    command : sudo systemctl start docker
+    become : yes
+    become_user : root
+
+  - name: Deploy Docker Container
+    command: docker run -itd -p 8084:8081 shubhamkushwah123/insure-me:3.0
+
+name: A description of the playbook.
+
+hosts: Specifies the target hosts or EC2 instances where these tasks will be executed. In this case, "all" means it will apply to all hosts defined in your Ansible inventory.
+
+become: This sets privilege escalation. When set to true, Ansible will run tasks with sudo. It's used to execute commands with elevated privileges.
+
+connection: Specifies the connection method. In this case, it's SSH.
+
+tasks: A list of tasks that will be executed on the target hosts.
+
+name: A description of the task.
+
+command: The shell command to be executed. In this case, it runs various apt-get and systemctl commands to update packages, install Docker, and start the Docker service. The final command deploys a Docker container using the docker run command.
+
+become: Specifies whether to escalate privileges for this specific task. In this playbook, it's used to run certain commands as the root user.
+
+become_user: Specifies the user to become when executing tasks. In this case, it's set to root for tasks that require root privileges.
+
+Overall, this playbook is designed to automate the installation and setup of Docker on multiple EC2 instances. Ensure that you have Ansible properly configured and an inventory file containing the target EC2 instance information before running this playbook. Additionally, make sure you have the necessary permissions to execute these commands on the remote hosts.
+
+                                                          ANSIBLE INSTALLATION
+                                                          --------------------
+command :-1) apt install ansible
+-------   2) ansible --version ( it shows ansible 2.9.6 and config file = /etc/ansible/ansible.cfg
+          3) it install python automatically ( python version = 3.8.10 )
+          4) then cd /etc/ansible
+          5) then ls -lart ( it shows hosts and ansible.cfg ) * hosts ( inventory files ) where applications are running
+                                                              * ansible.cfg ( something as master configuration file )
+                           
+                                                         AFTER INSTALLATION
+                                                         ------------------
+-- go to cd /etc/ansible then vi hosts
+-- there we have to give the private ip for which host machines we have to configure.
+
+-- when enter into vi hosts under
+-- ex.2 A collection of hosts belonging to the webservers
+   [webservers]
+   private ip
+   [webservers.vars]
+   ansible_ssh_user="ubuntu"
+   ansible_ssh_private_key_file= "etc/ansible/keypair name"
+-- then got command line
+-- command :- ansible -m ping all ( it shows privite ip|sucess ) * private ip means which we have given in host file.
+-- then create a play book file ( ex. vi playbook.yml )
+-- got to command line 
+-- COMMAND :- ansible --playbook playbook file name --become
+
+-- finally we have to check in the host machine whether the server is installed or not.
+
+
+
+
+
+
+                                             
+
+  
+
+
+
+
+
+

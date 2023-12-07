@@ -1,0 +1,86 @@
+                                         
+                                      PROMETHEUS
+                                      ----------
+commands:- apt install prometheus
+
+*service prometheus status----- it shows the status
+after installation open the port 9090 there promethues dashboard will open in that 
+* click on status---- click on targets there we can see dafault end points
+
+* enter into vi /etc/prometheus/prometheus.yml
+* in that we have add 
+under job_name node add this   - job_name: jenkins node
+                               # If prometheus-node-exporter is installed, grab stats about the local
+                               # machine by default.
+                               static_configs:
+                                 - targets: ['node ecporter public ip:9100']
+* than save it
+* give command ---- service prometheus restart
+* refresh the prometheus dashborad page there we can jenkins node click on that we can see the matrics
+
+                                    NODE EXPORTER port 9100
+                                    -------------
+* it works like a agent for prometheus
+commands:-
+--------
+*apt update
+*apt install prometheus-node-exporter
+*service prometheus-node-exporter status --- to check the status
+
+                                    GRAFANA
+                                    -------
+commands:-
+--------
+*sudo apt-get install -y apt-transport-https software-properties-common wget
+* sudo mkdir -p /etc/apt/keyrings/
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+* echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+*echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+*sudo apt-get update
+*sudo apt-get install grafana
+*sudo apt-get install grafana-enterprise
+*grafana-server -v --- to check the version
+*service grafana-server restart
+
+after installation with public ip with port 3000 search in the browser , grafana dashboard will open
+* for first time using dashboard user name and password is ADMIN by default after that we can set password.
+* after that dasboard will open
+* in dashboard deside home clink on 3 lines in that connection---datasource--add datasource---- clink on prometheus
+* under http :- give prometheus url with 9090 than clink on save & test
+
+* TO CREATE DASHBOARD
+  -------------------
+* beside home clink on 3 lines in that clink on dashboard----clink on new----new dashboard--- clink on add visulisation then dashboard will open
+* ride side it will show time series there we can select one
+* under matrics we can select matrics ( this matrics are provided by developer) 
+* clink on run quriery
+* there we can see the graphs
+* panel options---- title---we can change title name there
+* clink on save 
+
+                           WE CAN DOWNLOAD DASHBOARDS FORM GOOGLE 
+                           -------------------------------------
+* this are redimet dashboards
+* https://grafana.com/grafana/dashboards/ ( this is link for dashboards )
+* clink on any of the dashboard and right side it will show (copy id to clipboard) clink on that 
+* go to dashboard----new---- clink on import
+* paste it that ( copy id to clipboard) click on load
+* it will open the dashboard
+
+                             HOW TO CONNECT TO JENKINS WITH PROMETHEUS
+                             -----------------------------------------
+* in jenkins we have to install prometheus matric plugin
+* after that enter into vi /etc/prometheus/prometheus.yml
+* add this in that
+
+  - job_name: 'jenkins'
+    metrics_path: '/prometheus'
+    static_configs:
+      - targets: ['jenkins public ip:8080']
+
+* than save it
+* give command ---- service prometheus restart
+* refresh the prometheus dashborad page there we can jenkins node click on that we can see the matrics
+
+
+                        
