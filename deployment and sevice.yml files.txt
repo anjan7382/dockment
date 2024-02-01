@@ -1,0 +1,52 @@
+# Stage 1: Build the application
+FROM maven:3.8.4-openjdk-11 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean install
+
+# Stage 2: Create the final image
+FROM openjdk:11
+ARG JAR_FILE=target/*.jar
+COPY --from=build /app/${JAR_FILE} app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+                                          deployment.yml
+                                          --------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bankingapp
+  template:
+    metadata:
+      labels:
+        app: bankingapp
+    spec:
+      containers:
+        - name: bankingapp
+          image: sarika143/insurance1:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: bankingapp
+              containerPort: 8081
+              protocol: TCP
+
+                               service.yml file
+                               ----------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+spec:
+  type: ClusterIP
+  selector:
+    app: banking
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8081
