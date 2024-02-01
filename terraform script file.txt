@@ -1,0 +1,25 @@
+terraform {
+  required_providers {
+    aws = {
+        source = "hashicorp/aws"
+        version = "5.31.10"
+    }
+  }
+}
+resource "aws_instance" "production_server" {
+  ami           = "ami-0fc5d935ebf8bc3bc"  
+  instance_type = "t3.medium"               
+  key_name      = "devops"          
+  vpc_security_group_ids = ["vpc-06982bf62e44eb014"] 
+  tags = {
+    Name = "production-server"
+  }
+}
+
+output "production_server_ip" {
+  value = aws_instance.production_server.public_ip
+}
+provider "aws" {
+  # Configuration options
+  region = "us-west-2"
+}
