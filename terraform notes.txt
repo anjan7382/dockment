@@ -1,0 +1,40 @@
+                            
+                            TERRAFORM ( infrastucture as a code tool )
+                            ---------
+
+Terraform:- Terraform is an infrastructure as code tool that lets you build, change, and version cloud and on-prem resources safely and efficiently.
+
+installation of Terraform on windows :- https://developer.hashicorp.com/terraform/install
+
+installation of CLI :- https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+after installation of CLI:-
+
+GIVE COMMAND :- aws configure
+
+*it will ask aws access key ID, for that go to IAM user
+ 
+*create user--click on that user--under securrity credientials--access key--create access key--select CLI---next--crete access key--done--copy the access key and paste on CLI
+
+*it wil ask aws secret access key --- copy the secret access key beside the access key and paste it on CLI.
+
+* after that it will ask defualt region name (none) : us east1
+
+* defualt output fromat (none): json
+
+* after we have to create a terraform file to create an infrasture.
+
+* we have to store that file in git ripo or we have to crete it by using editors like , VI OR NONE. next we have to give that commands,
+
+*terraform init:- Initializes a new or existing Terraform working directory by downloading necessary plugins/modules defined in the configuration files.
+----------------
+*terraform play:-  Generates an execution plan showing what actions Terraform will take when you apply changes. It doesn't make any changes to the infrastructure but previews the changes.
+---------------
+*terraform apply :- Applies the changes defined in the configuration files to create, modify, or delete resources as per the Terraform configuration.
+----------------
+* terraform destory :- Destroys all the resources defined in the Terraform configuration.
+-------------------
+
+note :- github repo for terraform file :-https://github.com/DevSecOpsG/3-tier-architecture/tree/main
+                                        
+                                         https://github.com/anjan7382/star-agile-banking-finance.git ( use any repo for you are simple understanding )
