@@ -2,19 +2,35 @@ git commands:
 
 git add . : it is used to untracked files to tracked files
 git commit -m " commit name" : Commit changes
-git push origin main : Push changes to remote repository
+git push origin main : Pushes the current branch to the remote repository
 git branch: to see current branch
 git branch branch name : to add a new branch
-git checkout branch name: to switch to branch
-git checkout -b branch name: to create and switch at a time
+git checkout branch name: Switches to the specified branch
+git checkout -b branch name: Creates a new branch and switches to it.
 git branch -m old name : to remove a branch
 git branch -d branch name : to delete a branch
 git restore : it is used to restore all deleted files
-git merge : it is uesd to merge two branches
+git merge (branch name) : Merges the specified branch into the current branch
+git log : Displays the commit history
+git log --oneline :  Displays each commit on a single line.
+git fetch [remote] : Fetches changes from the remote repository
+git pull [remote] [branch]:Fetches and merges changes from the remote repository to the current branch.
+git status : Displays the status of the working directory and staging area
+git revert (commit id or head):  command is used to create a new commit that undoes the changes made in the last commit. 
+                               { head : its indicate lastest commit}
+git reset commit id  or git reset --mixed commit id : it will delete previous commit history and file which is commit is present in working directory,again it will add 
+                                                      to staging area by giving ( (git add .) and commit it by giving ( git commit -m " commit meassage ") )
+
+git reset --soft commit id : it will delete previous commit history and file which is commit is present in working directory and staging area 
+                             after that commit it by giving ( git commit -m " commit meassage ") 
+
+git reset --hard commit id : it will delete file in working directory which is commited
+
+
 
 ---------------------------------------------------------------------------------------
 
-maven: it is a build used to convert the source into war or jar files
+maven: it is a build used to convert the source code into war or jar files
 
 1.take a repository from google
 2.clone into that repo
@@ -199,39 +215,6 @@ command :-1) apt install ansible
 -- COMMAND :- ansible --playbook playbook file name --become
 
 -- finally we have to check in the host machine whether the server is installed or not.
-
-
-                                  jenkins installation commands.
-                                  ------------------------------
-
-sudo su -
-wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-echo "deb https://pkg.jenkins.io/debian-stable binary/" > /etc/apt/sources.list.d/jenkins.list
-apt-get update
-apt install openjdk-8-jdk
-apt-get install jenkins
-service jenkins status
-
-                                   sonarqube installation steps
-                                   ----------------------------
-#Login with root user and run below commands
-
-sudo su -
-apt update
-apt install -y default-jdk unzip
-exit
-
-#Login with Non-Root User and run below commands(ubuntu)
-
-wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.8.0.63668.zip -O sonarqube.zip
-unzip sonarqube.zip 
-ls -lart
-mv sonarqube-9.8.0.63668 sonarqube
-rm sonarqube.zip
-cd sonarqube/bin/linux-x86-64/
-./sonar.sh start
-
-#Then Start Accessing SonarQube using URL 	http://<IP-Address>:9000
 
 
 
