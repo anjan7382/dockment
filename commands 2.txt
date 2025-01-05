@@ -9,20 +9,21 @@ git checkout branch name: Switches to the specified branch
 git checkout -b branch name: Creates a new branch and switches to it.
 git branch -m old name : to remove a branch
 git branch -d branch name : to delete a branch
+git restore --staged <file> : it is used to tracked files to untacked file
+git diff : when we make a  changes src or file by using this command we see the changes
 git restore : it is used to restore all deleted files
+git show commit id : we see what changes we have done for particular commit
 git merge (branch name) : Merges the specified branch into the current branch
 git log : Displays the commit history
 git log --oneline :  Displays each commit on a single line.
 git fetch [remote] : Fetches changes from the remote repository
-git pull [remote] [branch]:Fetches and merges changes from the remote repository to the current branch.
+git pull [remote] [branch]:Fetches and merges changes from the remote repository to local repo.
 git status : Displays the status of the working directory and staging area
 git revert (commit id or head):  command is used to create a new commit that undoes the changes made in the last commit. 
                                { head : its indicate lastest commit}
-git reset commit id  or git reset --mixed commit id : it will delete previous commit history and file which is commit is present in working directory,again it will add 
-                                                      to staging area by giving ( (git add .) and commit it by giving ( git commit -m " commit meassage ") )
+git reset commit id  or git reset --mixed commit id : it will delete previous commit history and file which is commit is present in working directory,again it will add  to staging area by giving ( (git add .) and commit it by giving ( git commit -m " commit meassage ") )
 
-git reset --soft commit id : it will delete previous commit history and file which is commit is present in working directory and staging area 
-                             after that commit it by giving ( git commit -m " commit meassage ") 
+git reset --soft commit id : it will delete previous commit history and file which is commit is present in working directory and staging area after that commit it by giving ( git commit -m " commit meassage ") 
 
 git reset --hard commit id : it will delete file in working directory which is commited
 
