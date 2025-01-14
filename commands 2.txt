@@ -162,7 +162,7 @@ yaml file syntax:
 ----------------
 1) add space after each colon and hypen
 2) do not use tab while creating a yaml , use space.
-3) 
+3) always follow 2,4,6,8 space rules.
 
 Deployment.yml
 --------------
