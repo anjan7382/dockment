@@ -75,7 +75,13 @@ to start the stopped container :- docker start container id
 to stop the container :- docker stop container id
 docker rm container id :- to delete the container
 docker login ;- used to login into docker hub via command line
+docker tag : docker tag imagename username of dockerhub/imagename
 docker push username of dockerhub/image name :- to push the image into docker hub
+port mapping : docker run -itd -p 8084:8081 anjan738286/devops
+            The container's application listens on port 8081 internally, but you interact with it through port 8084 on the host.
+Summary:
+You will use port 8084 on the host to access the application in real-time.
+
 
 DOCKERFILE:-
 
