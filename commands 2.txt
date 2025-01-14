@@ -158,6 +158,12 @@ kubectl describe pods :-Show details about all pods
 kubectl delete pods --all :- Remove all pods 
 kubectl logs [pod-name]:- to print logs from containers in a pod, use the kubectl logs command
 
+yaml file syntax:
+----------------
+1) add space after each colon and hypen
+2) do not use tab while creating a yaml , use space.
+3) 
+
 Deployment.yml
 --------------
 
@@ -170,10 +176,9 @@ spec:
   selector:
     matchLabels:
       app: bankingapp ------------ ( any name we can give )
-  template:                                                                             
+  template:           ------------ template: Defines the template for creating Pods managed by the Deployment
     metadata:
-      labels:                                                     
-        app: bankingapp  --------------- (any name we can give)
+      labels:   ------------- Adds the label app: banking to the Pods, which must match the selector.                                   app: bankingapp  --------------- (name given in selector in app section)
     spec:
       containers:
         - name: bankingapp -------------( any valid name we can give )
@@ -209,6 +214,10 @@ spec:
       targetPort: 8081 -------- ( The port on the Pod that the traffic will be forwarded to)
 
 note: When this Service is created, it will direct traffic received on port 80 of the Service to port 8081 on the Pods selected by the app: banking label.
+
+                              or
+
+ Listens on port 80 for incoming traffic and forwards it to port 8081 on the target Pods.
 ----
 
 
