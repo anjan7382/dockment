@@ -299,7 +299,16 @@ command :-1) apt install ansible
 
 -- finally we have to check in the host machine whether the server is installed or not.
 
+                                               ANSIBLE ROLES
+                                             ------------------
+IN ansible roles is primary machanesim of breaking  a playbook into multiply files.
+this simpliy writing a complex plybooks and it makes them easy to reuse.
 
+ansible roles sttucture;
+------------------------
+files: contains files which we want to be copy to remote host.we dont to want to spicy a path of resources stored in this directory.
+
+handlers: it is used when the service want to be restart in playbook.
 
 
 
