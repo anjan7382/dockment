@@ -1,3 +1,74 @@
+                    LINUX COMMANDS
+                  --------------------
+
+Basic Navigation and File Management
+------------------------------------
+ls: Lists files and directories in the current directory.
+ls -l: Lists files with detailed information (permissions, size, date, etc.).
+ls -a: Shows hidden files (files starting with a dot ".").
+ls -h: Displays file sizes in a human-readable format.
+cd: Changes the current directory.
+cd ..: Moves up one directory.
+cd /path/to/directory: Navigates to a specific directory.
+cd: Returns to the home directory.
+pwd: Prints the current working directory (shows where you are).
+mkdir: Creates a new directory.
+mkdir directory_name: Creates a directory named "directory_name".
+rmdir: Removes an empty directory.
+rmdir directory_name: Removes the directory if it's empty.
+rm: Removes files or directories.
+rm file.txt: Deletes the file "file.txt".
+rm -r directory_name: Recursively deletes a directory and its contents (use with caution!).
+rm -f file.txt: Forcefully deletes a file without confirmation.
+cp: Copies files and directories.
+cp file.txt destination: Copies "file.txt" to the "destination" directory.
+cp -r directory_name destination: Recursively copies a directory and its contents.
+mv: Moves or renames files and directories.
+mv file.txt new_name.txt: Renames "file.txt" to "new_name.txt".
+mv file.txt destination: Moves "file.txt" to the "destination" directory.
+touch: Creates an empty file or updates file timestamps.
+touch file.txt: Creates an empty file named "file.txt".
+
+Viewing and Editing Files
+--------------------------
+
+cat: Displays the contents of a file.
+cat file.txt: Shows the content of "file.txt" in the terminal.
+less: Views file contents page by page (for larger files).
+Use spacebar to go forward, 'q' to quit.
+head: Displays the first few lines of a file.
+head -n 10 file.txt: Shows the first 10 lines.
+tail: Displays the last few lines of a file.
+tail -n 10 file.txt: Shows the last 10 lines.
+nano or vim: Text editors for creating and modifying files.
+
+Searching and Filtering
+------------------------
+grep: Searches for specific patterns within files.
+grep "pattern" file.txt: Finds lines containing "pattern" in "file.txt".
+find: Searches for files and directories based on various criteria.
+find . -name "file.txt": Finds files named "file.txt" in the current directory and its subdirectories.
+
+System Information and Control
+--------------------------------
+uname: Displays system information.
+uname -a: Shows all system information.
+df: Shows disk space usage.
+du: Shows directory space usage.
+ps: Lists running processes.
+top: Displays dynamic real-time view of running processes.
+kill: Terminates a process.
+shutdown: Shuts down the system.
+
+Other Useful Commands
+---------------------
+man: Displays the manual page for a command.
+man ls: Shows the manual for the ls command.
+clear: Clears the terminal screen.
+history: Shows a history of previously used commands.
+wget: Downloads files from the internet.
+
+
 git commands:
 
 git add . : it is used to untracked files to tracked files
