@@ -1,0 +1,368 @@
+                                       shell scripting:
+                                       ---------------
+shell scripting is program to write series of commands in a single script that can be stored and excuted at ant time.
+
+shell script is a text file that contains a sequence of commands.
+*bash is a defualt shell.
+
+command: which $SHELL or echo $SHELL ( to check the which bash we are using)
+-------
+
+                          how to write a shell script:
+                          ---------------------------
+* create a file first using vi or nano editors or touch command
+* ex: vi script ( it will enter into vi mode ) there we have to write a script
+
+shebang line:The shebang line in a shell script is the first line of the script that specifies the path to the interpreter that should be used to run the ------------ script.
+
+  
+#!/bin/bash
+
+num1=10
+num2=20
+result=$(expr $num1 + $num2)
+echo "Print the result: $result"
+
+than back to command line
+
+command: sh script.sh (enter)
+
+it will show : Print the result: 30
+
+                                     varibles
+                                     --------
+* to check in bulid or predefined varibles 
+command: env
+-------
+varibles are used to store date that can be reffered and manupulated throughout the script ( variables are nothing but a key value pair)
+
+* varibles are case sensitive 
+ex: no=20    # Assigns 20 to the variable 'no'
+    NO=10    # Assigns 10 to the variable 'NO'
+
+   echo $no  
+it will print 20 but not 10
+                           
+                                 Two types of shell varibles
+                                 ---------------------------
+1) system varibles or defualt variables or predifined variables
+----------------------------------------------------------------
+ * created and maintained by linux itself , this type of variables defined in capital letters
+ ex: $HOME, $PWD, $USER, $PATH, $SHELL etc.
+
+2) usewr defined varibles
+---------------------------
+User-defined variables are variables created and managed by the user in a shell script or interactive shell session. 
+These variables are used to store data and control the flow of the script
+
+   EXAMPLE:
+  -------------
+#!/bin/bash                     
+                                      Variables are placeholders used to store data, which can be reused and modified throughout the script.
+# Assign variables                    ----------------------------------------------------------------------------------------------------
+name="Alice"                                           name: A variable holding the value "Alice".
+age=25                                                  age: A variable holding the value 25.
+greeting="Hello, $name!"                           greeting: A variable holding the value "Hello, $name!"
+                                                         
+# Command substitution                  Strings are sequences of characters enclosed in quotes (" or '). In this case: (ex : "anjan")
+current_time=$(date)                    ------------------------------------------------------------------------------
+                                                      "Alice": A string assigned to the variable name
+# Access variables                                         25: Not a string but a number (integer) assigned to the variable age.
+echo $greeting                                "Hello, $name!": A string assigned to the variable greeting.
+echo "You are $age years old."
+echo "Current time is: $current_time"
+
+                                                       ARGUMENTS
+                                                       ---------
+
+* in shell scripting arguments are values passed to script or functions when it is excuted.
+                                       or
+* In shell scripting, arguments are inputs provided to a script at runtime. 
+
+* arguments are accessed using parameters which are represneted by 
+ex: $0,$1,$2,$3,$4 etc
+
+$0: The name of the script.
+
+$1, $2, ...: The first, second, etc., arguments.
+
+$#: The number of arguments passed to the script.
+
+$@ or $*: All arguments as a single string (or as separate arguments in quotes).
+
+
+Example:
+-------
+frist create a file (ex: vi example)
+#/bin/bash!
+
+echo "script name=$0"
+echo "first argument=$1"
+echo "second argument=$2"
+echo "All arguments=$@"
+echo "Number of arguments=$#"
+
+command: sh example sh example anjan 25   
+                                             (sh example is a command,) (anjan is argument $1 and 25 is argument $2)
+                                               $@ : it will print 2 ($1,$2)
+                                               $# : it will print anjan 25
+                                               $0: The name of the script.
+
+script name=example
+first argument=anjan
+second argument=25
+All arguments=anjan 25
+Number of arguments=2
+
+this the final output.
+
+another example:
+----------------
+frist create a file (ex: vi devops)
+#!/bin/bash
+
+num1=$1
+num2=$2
+result=$(expr $num1 + $num2)
+echo "Print the result: $result"
+
+command: sh example sh devops 10 20
+
+it will print 30
+
+                                                   IF AND ELSE CONDITION
+                                                   ---------------------
+*The if and else conditions in shell scripting are used for decision-making.
+*They allow the script to execute a block of commands based on whether a specified condition evaluates to true or false.
+*if Condition: Executes a block of code if a condition is true.
+--------------
+*else Condition: Executes a different block of code if the condition is false.
+---------------
+
+                                                   Numeric Comparison:
+
+                                                   -------------------
+*[ $a -eq $b ] - True if a is equal to b.
+*[ $a -ne $b ] - True if a is not equal to b
+*[ $a -lt $b ] - True if a is less than b.
+*[ $a -le $b ] - True if a is less than or equal to b.
+*[ $a -gt $b ] - True if a is greater than b.
+*[ $a -ge $b ] - True if a is greater than or equal to b
+
+                                                     File Test:
+                                                     ----------
+*[ -f file ] - True if file exists and is a regular file.
+*[ -d directory ] - True if directory exists.
+*[ -r file ] - True if file is readable
+*[ -w file ] - True if file is writable.
+*[ -x file ] - True if file is executable. 
+
+                                                     EXAMPLE
+                                                     -------
+* first create a file , after enter into vi or nano editor to write a script after back to cli.
+* then excute the command: sh <file name>
+
+#!/bin/bash
+file="eaxmple"
+if [ -f "$file" ]; then
+  echo "the file exists."
+else [ -f "$file" ];
+  echo "the file doesnt exist."
+fi
+
+
+2) #!/bin/bash
+
+# Prompt the user to input a number
+read -p "Enter a number: " num  -------------------------read -p: Prompts the user to input a number and stores it in the variable num.
+
+if [ $num -gt 10 ]; then     ------------------------- [ $num -gt 10 ]: Checks if the value of num is greater than 10.
+    echo "The number is greater than 10." ------------ echo: Prints a message if the condition is true.
+
+fi
+                                            
+* in CLI when we excute command ( ex: sh <file name> )
+* it will ask Enter a number: 15 ( any number we can enter to check if condition ) here i entered 15
+*then the output is :
+--------------------
+*The number is greater than 10. ( 15 is greather than 10)
+
+
+3) #!/bin/bash
+
+read -p "Enter a number: " num
+
+if [ "$num" -gt 10 ]; then
+    echo "The number is greater than 10."
+else
+    echo "The number is 10 or less."
+fi
+
+                                                                 case statement
+                                                                 --------------
+* it is a popular alternative to if-else statements when we need to excute multi tasks.
+
+EXAMPLE:
+-------
+
+To back up a file using case statement
+
+#!/bin/bash
+
+# Define source and destination directories
+SOURCE_FILE="/home/ubuntu/filename"            # Replace 'filename' with your actual file name
+DEST_DIR="/path/to/cd"                         # Replace with the actual path to your 'cd' directory
+
+# Check if the source file exists
+case $(test -e $SOURCE_FILE; echo $?) in
+  0)
+    # If the source file exists, check if the destination directory exists
+    case $(test -d $DEST_DIR; echo $?) in
+      0)
+        # If the destination directory exists, perform the backup
+        cp $SOURCE_FILE $DEST_DIR
+        echo "File successfully backed up to $DEST_DIR."
+        ;;
+      1)
+        # If the destination directory doesn't exist, notify and exit
+        echo "Error: Destination directory $DEST_DIR does not exist."
+        ;;
+    esac
+    ;;
+  1)
+    # If the source file doesn't exist, notify the user
+    echo "Error: Source file $SOURCE_FILE does not exist."
+    ;;
+esac   
+
+1) Menu-Driven Scripts
+----------------------
+
+#!/bin/bash
+
+echo "Select an option:"
+echo "1) Backup Files"
+echo "2) Restore Files"
+echo "3) Exit"
+read -p "Enter your choice: " choice
+
+case $choice in
+  1)
+    echo "Backing up files..."
+    tar -czf backup.tar.gz /path/to/files
+    ;;
+  2)
+    echo "Restoring files..."
+    tar -xzf backup.tar.gz -C /path/to/restore
+    ;;
+  3)
+    echo "Exiting..."
+    exit 0
+    ;;
+  *)
+    echo "Invalid option. Please try again."
+    ;;
+esac
+
+2)  File Type Validation;
+------------------------
+
+#!/bin/bash
+
+file="report.pdf"
+
+case $file in
+  *.txt)
+    echo "Processing text file..."
+    cat $file
+    ;;
+  *.csv)
+    echo "Processing CSV file..."
+    awk -F, '{print $1, $2}' $file
+    ;;
+  *.pdf)
+    echo "Processing PDF file..."
+    pdftotext $file - > output.txt
+    ;;
+  *)
+    echo "Unsupported file type."
+    ;;
+esac
+
+3) installation steps for docker,git and jenkins.
+-------------------------------------------------
+#!/bin/bash
+
+# Function to install Jenkins
+install_jenkins() {
+  echo "Installing Jenkins..."
+  # Update package list and install Jenkins
+  sudo apt update
+  sudo apt install -y openjdk-11-jdk
+  wget -q -O - https://pkg.jenkins.io/jenkins.io.key | sudo tee /etc/apt/trusted.gpg.d/jenkins.asc
+  sudo sh -c 'echo deb http://pkg.jenkins.io/debian/ $(lsb_release -cs) main > /etc/apt/sources.list.d/jenkins.list'
+  sudo apt update
+  sudo apt install -y jenkins
+  sudo systemctl start jenkins
+  sudo systemctl enable jenkins
+  echo "Jenkins has been installed and started."
+}
+
+# Function to install Docker
+install_docker() {
+  echo "Installing Docker..."
+  # Update package list and install Docker
+  sudo apt update
+  sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  sudo apt update
+  sudo apt install -y docker-ce
+  sudo systemctl start docker
+  sudo systemctl enable docker
+  echo "Docker has been installed and started."
+}
+
+# Function to install Git
+install_git() {
+  echo "Installing Git..."
+  # Install Git
+  sudo apt update
+  sudo apt install -y git
+  echo "Git has been installed."
+}
+
+# Main Script
+echo "Choose the tool you want to install:"
+echo "1. Install Jenkins"
+echo "2. Install Docker"
+echo "3. Install Git"
+echo "4. Exit"
+
+read -p "Enter your choice (1-4): " choice
+
+case $choice in
+  1)
+    install_jenkins
+    ;;
+  2)
+    install_docker
+    ;;
+  3)
+    install_git
+    ;;
+  4)
+    echo "Exiting the script."
+    ;;
+  *)
+    echo "Invalid choice. Please choose between 1-4."
+    ;;
+esac
+
+
+
+                                     
+
+                                               
+
+
