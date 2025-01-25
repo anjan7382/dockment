@@ -254,7 +254,7 @@ spec:
     spec:
       containers:
         - name: bankingapp -------------( any valid name we can give )
-          image: sarika143/insurance1:v1 -------( docker image which is send to docker hub used for the container )
+          image: anjan/insurance1:v1 -------( docker image which is send to docker hub used for the container )
           imagePullPolicy: IfNotPresent
           ports:
             - name: bankingapp ---- ( Yes, under the port section, you can give any name to the port. This is a descriptive name that helps identify the port within the container
