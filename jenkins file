@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git checkout') {
+            steps {
+               git 'https://github.com/anjan7382/star-agile-insurance-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+            sh 'mvn clean install'
+            }
+        }
+        stage('build docker image') {
+            steps {
+                sh 'docker build -t devops .'
+
+            }
+        }
+        stage('push docker image') {
+            steps {
+                
+            }
+        }
+    }     
+}
+        
+
