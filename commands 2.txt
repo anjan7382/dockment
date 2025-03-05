@@ -207,7 +207,7 @@ kubernetes master components:-1)Api server ( master communicate with the rest of
                               4)contoller manager ( this is resposible for noticing and responding when nodes and containers are goes down )
 kubernetes worker node:
 ----------------------
-kubelet: this is responsible for interacting with the master to provide health information of worker node.
+kubelet: An agent that runs on each node in the cluster. It ensures that containers are running in pods as expected and reports their status to the API server
 kube proxy: kube proxy is responsible for ensuring network traffic is routed properly to internal and external services as required.                          or
                responsible for comunucation between pods and services
 
