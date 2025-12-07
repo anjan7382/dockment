@@ -42,6 +42,14 @@ tail: Displays the last few lines of a file.
 tail -n 10 file.txt: Shows the last 10 lines.
 nano or vim: Text editors for creating and modifying files.
 
+root@ip-172-31-8-200:/home/ubuntu#
+form this i want to get may user name for this
+command:  sudo useradd anjan : this is used set user to group then see  anjan@ip-172-31-8-200:~$
+          id anjan ; to see user is created or not
+          su - anjan : You will see the prompt change  anjan@ip-172-31-8-200:~$
+
+
+
 Searching and Filtering
 ------------------------
 grep: Searches for specific patterns within files.
@@ -388,6 +396,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
