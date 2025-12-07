@@ -27,7 +27,13 @@ mv: Moves or renames files and directories.
 mv file.txt new_name.txt: Renames "file.txt" to "new_name.txt".
 mv file.txt destination: Moves "file.txt" to the "destination" directory.
 touch: Creates an empty file or updates file timestamps.
-touch file.txt: Creates an empty file named "file.txt".
+touch file.txt: Creates an empty file named "file.txt".  
+
+oot@ip-172-31-8-200:/home/ubuntu#
+form this i want to get may user name for this
+command:  sudo useradd anjan : this is used set user to group then see  anjan@ip-172-31-8-200:~$
+          id anjan ; to see user is created or not
+          su - anjan : You will see the prompt change  anjan@ip-172-31-8-200:~$
 
 Viewing and Editing Files
 --------------------------
@@ -40,13 +46,7 @@ head: Displays the first few lines of a file.
 head -n 10 file.txt: Shows the first 10 lines.
 tail: Displays the last few lines of a file.
 tail -n 10 file.txt: Shows the last 10 lines.
-nano or vim: Text editors for creating and modifying files.
-
-root@ip-172-31-8-200:/home/ubuntu#
-form this i want to get may user name for this
-command:  sudo useradd anjan : this is used set user to group then see  anjan@ip-172-31-8-200:~$
-          id anjan ; to see user is created or not
-          su - anjan : You will see the prompt change  anjan@ip-172-31-8-200:~$
+nano or vim: Text editors for creating and modifying files
 
 
 
@@ -396,6 +396,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
