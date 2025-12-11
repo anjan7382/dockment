@@ -305,7 +305,54 @@ note: When this Service is created, it will direct traffic received on port 80 o
                               or
 
  Listens on port 80 for incoming traffic and forwards it to port 8081 on the target Pods.
+
+configmap.yaml
+--------------
+ConfigMap is used to store NON-sensitive configuration values that your application needs to run.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_PORT: "8080"
+  LOG_LEVEL: "info"
+  APP_MODE: "prod"
+  DB_HOST: "mysql.default.svc.cluster.local"
+  CACHE_HOST: "redis.default.svc.cluster.local"
+  API_URL: "https://api.payment.com"
+  TIMEOUT: "5000"
+WHY VALUES ARE STORED IN CONFIGMAP (SIMPLE EXPLANATION)
+
+Because these values can change (Example: port, log level, API URL, timeout)
+Because developers don’t want to change code every time The app reads values from ConfigMap instead of writing them inside code.
+because each environment has different values Dev environment ≠ QA ≠ Prod.So DevOps changes the config, not the code.
+DevOps changes config ONLY when developer tells them or requirement changes.
+Because these values are NOT sensitive (PORT, LOG_LEVEL, API_URL are safe → not passwords)
+
+VERY SIMPLE:  ConfigMap stores normal settings that may change,
+              so you don’t need to change code or rebuild the application.
+
+secret.yaml
+-----------
+Secret is used to store SENSITIVE values that MUST NOT be exposed.
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+type: Opaque
+data:
+  DB_USERNAME: YWRtaW4=              # admin
+  DB_PASSWORD: QWRtaW4hMTIz          # Admin!123
+  REDIS_PASSWORD: cmVkaXNAcDEyMw==   # redis@p123
+  JWT_SECRET: c2VjcmV0LWtleQ==       # secret-key
+  EMAIL_SMTP_PASSWORD: U21wQDEyMw==  # Smp@123
+  THIRD_PARTY_API_KEY: QUJDREVGRw==  # ABCDEFG
+command: echo -n "Admin@123" | base64 ( to decode the value )  output :  QWRtaW4hMTIz
+
 ----
+
 
 
 
@@ -403,6 +450,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
