@@ -352,13 +352,7 @@ data:
 command: echo -n "Admin@123" | base64 ( to decode the value )  output :  QWRtaW4hMTIz
 
 note: add this both files in deployment.yml after run the commands.
-
 ----
-
-
-
-
-
 ---------------------------------------------------------------------------------------------------------------------------------
 
                                           ANSIBLE ( configuration managenment tool )
@@ -452,6 +446,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
