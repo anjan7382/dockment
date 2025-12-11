@@ -351,6 +351,8 @@ data:
   THIRD_PARTY_API_KEY: QUJDREVGRw==  # ABCDEFG
 command: echo -n "Admin@123" | base64 ( to decode the value )  output :  QWRtaW4hMTIz
 
+note: add this both files in deployment.yml after run the commands.
+
 ----
 
 
@@ -450,6 +452,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
