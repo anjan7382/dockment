@@ -193,10 +193,17 @@ ENTRYPOINT ["java","-jar","/app.jar"]: This is the entry point for the Docker co
                                        it should execute the Java command to run the JAR file (app.jar) as the main application.
 
 DOCKER ARCHITECTURE :- https://www.whizlabs.com/blog/docker-architecture-in-detail/ 
-                                            
-                                            
- 
-   
+
+ECR COMMANDS:
+---------------
+WE WILL GET ALL COMMANDS WHEN WE CREATE ECR REPO IN AWS LIKE ( docker login,doker biuld,docker tag,docker push )
+
+docker push: docker pull 209479296616.dkr.ecr.ap-south-1.amazonaws.com/insurence:latest
+( this will pull docker image from ecr with tag without this we cannot run the container because it is in ecr we want it to local means powershell or cmd)
+
+docker run: docker run -p 8081:8081 209479296616.dkr.ecr.ap-south-1.amazonaws.com/insurence:latest
+( this will run the docker container and map it to local host )
+after this acess the application with local host ( http://localhost:8081 )
 
 -------------------------------------------------------------------------------------------------------
 
@@ -396,6 +403,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
