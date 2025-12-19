@@ -1,0 +1,195 @@
+1) Pods are Running & Healthy Service exists But application is NOT reachable (Connection Refused / Timeout).
+---------------------------------------------------------------------------------------------------------------
+ Check if Service is actually connected to Pods
+ 90% real issues are here
+command : kubectl get endpoints <service-name>
+Expected output ; IP:PORT    If you see  output as <none>
+ Service is NOT connected to any pod.
+ Root causes:
+------------------------
+A) Label mismatch – what it REALLY means (realtime explanation)
+In Kubernetes, Service does NOT connect to Pods automatically.
+It connects ONLY using labels.
+If labels don’t match, traffic never reaches pods — even if pods are Running.
+Labels mismatch
+Wrong selector in Service
+command: kubectl get pod --show-labels
+         kubectl describe svc <service-name>
+🔴 What is Label Mismatch?
+👉 Service selector ≠ Pod labels
+So:
+Pods are running ✔
+Service exists ✔
+BUT Service has NO endpoints ❌
+Result → Connection refused / timeout
+🧠 Simple Realtime Example
+------------------------------------
+Pod (Deployment)                            
+----------------                            
+ metadata:                                 
+  labels:
+    app: backend                                
+service
+---------
+selector:
+  app: frontend   ❌
+❌ Mismatch
+Service is searching for pods with app=frontend
+But pods have app=backend
+➡ Service finds ZERO pods
+
+B) WRONG PORT
+-------------
+“Wrong port” means the Service is sending traffic to a port where the application is NOT listening.
+
+So:
+Pod is Running ✔
+Service exists ✔
+But traffic hits a closed port ❌
+➡ Connection refused
+🧠 How Ports Work in Kubernetes (Very Important)
+
+There are 3 different ports people confuse:
+
+1️⃣ containerPort → where app runs inside Pod
+2️⃣ targetPort → where Service forwards traffic
+3️⃣ port / nodePort → where clients connect
+
+👉 targetPort MUST match containerPort
+
+🔴 Realtime Example (Wrong Port)
+Pod (App runs on 8080)
+containers:
+- name: app
+  image: myapp
+  ports:
+  - containerPort: 8080
+Service (WRONG)
+ports:
+- port: 80
+  targetPort: 80   ❌
+❌ Service sends traffic to port 80
+❌ App is listening on 8080
+➡ Connection refused
+
+✅ Correct Configuration
+ports:
+- port: 80
+  targetPort: 8080   ✔
+
+🔍 How to Detect Wrong Port (Realtime)
+1️⃣ Check app port inside pod
+COMMAND: kubectl describe pod <pod-name>
+------
+               or
+       kubectl exec -it <pod> -- netstat -tulnp
+✔ Must show:
+
+0.0.0.0:8080
+2️⃣ Check Service ports
+COMMAND: kubectl describe svc <service-name>
+3️⃣ Check Endpoints
+COMMAND : kubectl get endpoints <service-name>
+If port is wrong → endpoints exist but connection fails
+
+C) ✅ Issue with Readiness Probe – Realtime Kubernetes Explanation
+
+Readiness probe issue means:
+👉 Pods are Running, but Kubernetes is NOT sending traffic to them
+So:
+
+Pod status = Running ✔
+
+Service exists ✔
+
+App still NOT reachable ❌
+
+🧠 What Readiness Probe Does (Simple)
+Readiness probe decides whether a pod is READY to receive traffic
+If readiness fails:
+Pod stays NotReady
+Service removes pod from endpoints
+Traffic is blocked
+
+❌ WRONG READINESS PROBE (Common Production Failures)
+❌ Case 1: Wrong Path (404 error)
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+
+Problem
+--------
+App exposes /ready
+Probe hits /health
+Returns 404
+Pod becomes NotReady
+Service endpoints = NONE
+-------------------------------------------------------
+
+❌ Case 2: Wrong Port (Connection refused)
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 80   ❌
+Problem
+---------
+App runs on 8080
+Probe checks 80
+Connection refused
+Pod never becomes ReaDY
+---------------------------------------------------
+❌ Case 3: App starts slowly
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 3   ❌
+Problem
+--------
+App takes 30s to start
+Probe runs too early
+Continuous failures
+Traffic never reaches pod
+
+✅ CORRECT READINESS PROBE (Production Ready)
+✅ HTTP-based (Most common)
+
+readinessProbe:
+  httpGet:
+    path: /ready    -----------        Endpoint used to check application readiness   ex: http://<pod-ip>:8080/ready
+
+    port: 8080      ----------------   Port where the application listens inside the container. Must match: Application listening port ( container port)Wrong port = pod always NotReady
+  initialDelaySeconds: 20  ------------- Kubernetes waits 20 seconds after container start before the first readiness check. Why:App needs time to:Start server,Load configs,Connect to DB.
+  periodSeconds: 10  ---------------- Kubernetes checks readiness every 10 seconds 
+  timeoutSeconds: 2  --------- Kubernetes waits 2 seconds for the /ready response If no response within 2 seconds:Probe fails, Pod marked NotReady
+  failureThreshold: 3 ----------- Number of consecutive failures allowed 1st failure → warning
+                                                                         2nd failure → warning
+                                                                         3rd failure → ❌ Pod marked NotReady
+                                                                         📌 Traffic is removed only after 3 continuous failures
+
+✔ App fully started
+✔ Dependencies ready
+✔ Traffic allowed
+
+🧠 COMPLETE REALTIME FLOW
+--------------------------------
+Pod starts
+↓
+Wait 20 seconds
+↓
+Send HTTP GET /ready every 10 seconds
+↓
+If response > 2 sec → failure
+↓
+If fails 3 times continuously → traffic STOPPED
+↓
+Pod continues running (no restart)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
