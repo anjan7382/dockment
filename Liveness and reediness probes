@@ -1,0 +1,181 @@
+🔍 What are Probes in Kubernetes (Real-Time Meaning)
+
+In production, Kubernetes must automatically check whether your application is healthy or not.
+
+Kubernetes does this using probes:
+
+Liveness Probe → Is the app alive or stuck?
+--------------------------------------------
+👉 Checks whether the application is alive or stuck.
+    If liveness probe fails, Kubernetes restarts the container.
+    Used when the app is running but not responding (deadlock, infinite loop).
+
+How does Liveness Probe check whether the app is alive or stuck?
+Short answer:
+👉 Kubernetes does NOT know your app logic
+👉 It only checks a condition you define
+👉 If that condition fails repeatedly → Kubernetes assumes app is stuck
+
+🔍 What Kubernetes actually does (Realtime Flow)
+Kubernetes runs your container
+It waits for initialDelaySeconds
+It periodically executes the liveness probe
+If the probe fails continuously, Kubernetes says:
+“App is not healthy → restart container”
+
+🧪 HOW does it check? (3 Real Ways)
+   Kubernetes checks liveness using one of these:
+1️⃣ HTTP GET (Most Common – Realtime)
+Example: livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+What actually happens?
+Kubernetes sends an HTTP request:
+GET http://<pod-ip>:8080/health
+
+IMPORTANT : how do this i know this developer issue or devops issue?
+---------------------------------------------------------------------\
+🧠 Golden Rule (Realtime)
+
+If Kubernetes is doing what it is configured to do, and the app fails → Developer issue
+If Kubernetes is misconfigured → DevOps issue
+
+🔍 STEP-BY-STEP REALTIME DECISION FLOW
+1️⃣ Check Pod Events (MOST IMPORTANT)
+COMMAND: kubectl describe pod <pod-name>
+--------
+Look at Events: 🔴 Case A: Liveness probe failed (HTTP 500 / timeout)
+                           Liveness probe failed: HTTP probe failed with statuscode: 500
+
+👉 Kubernetes config is correct
+👉 Probe path is correct
+👉 App returned error
+
+✅ Developer issue
+---------------------------------------------
+🔴 Case B: Connection refused / wrong port
+Liveness probe failed: connect: connection refused
+port: 8081   ❌
+But app runs on:
+server.port=8080
+✅ DevOps issue (wrong port)
+
+ livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 40   # start AFTER readiness
+          periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+---------------------------------------------------------------------------------------
+
+2) Readiness Probe → Is the app ready to receive traffic?
+  Checks whether the application is ready to receive traffic.
+  If readiness probe fails, Kubernetes stops sending traffic to the pod (no restart).
+  Used when the app is starting up, busy, or temporarily unavailable.
+
+To check whether an issue is related to a Readiness Probe in real time;
+------------------------------------------------------------------------
+1️⃣ First symptom (MOST IMPORTANT)
+👉 Application not accessible, but pod is running
+COMMAND ; kubectl get pods
+Output example: NAME        READY   STATUS    RESTARTS
+                app-xyz     0/1     Running   0
+🔴 Key sign
+Pod = Running
+READY = 0/1
+✅ This strongly indicates a READINESS issue
+
+2️⃣ Confirm using pod details
+COMMAND : kubectl describe pod app-xyz
+Look for this section: Readiness probe failed: HTTP probe failed with statuscode: 503
+✅ If you see Readiness probe failed, the issue is 100% readiness-related
+
+3️⃣ Check service endpoints (REALTIME TRAFFIC CHECK)
+COMMAND: kubectl get endpoints <service-name>
+If readiness is failing: <none>
+
+🔴 Means:
+Pod is removed from Service
+No traffic is sent
+✅ This confirms a readiness problem
+
+4️⃣ Compare with liveness (to avoid confusion)
+COMMAND; kubectl get pods
+
+7️⃣ Final 1-line decision rule (INTERVIEW READY)
+If the pod is running but not receiving traffic and no restarts are happening → it is a READINESS probe issue.
+
+HOW TO CHECK WHETHER THE ISSUE IS DEVOPS OR DEVELOPER
+-------------------------------------------------------
+COMMAND; kubectl describe pod <pod-name>
+🔍 What to look for (VERY IMPORTANT)
+
+1️⃣ Readiness probe errors → Decide owner
+You will see lines like this in Events:
+🔴 Developer issue examples
+Readiness probe failed: HTTP probe failed with statuscode: 500
+Readiness probe failed: HTTP probe failed with statuscode: 503
+
+👉 Wrong path / port / timeout → DevOps issue
+
+ readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 20   # wait for app startup
+          periodSeconds: 10         # check every 10 sec
+          timeoutSeconds: 2
+          failureThreshold: 3
+------------------------------------------------------------------------------------
+✅ REALTIME (CORRECT) – Readiness & Liveness Probes  
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: insurance
+  template:
+    metadata:
+      labels:
+        app: insurance
+    spec:
+      containers:
+      - name: insurance-container
+        image: insurance-app:1.0.0
+        ports:
+        - containerPort: 8080
+
+        # ======================
+        # READINESS PROBE
+        # ======================
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 20   # wait for app startup
+          periodSeconds: 10         # check every 10 sec
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+        # ======================
+        # LIVENESS PROBE
+        # ======================
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 40   # start AFTER readiness
+          periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 3
+
+
+
