@@ -187,6 +187,87 @@ If fails 3 times continuously → traffic STOPPED
 ↓
 Pod continues running (no restart)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2) Pods keep restarting randomly (every few minutes)
+You will usually see: 
+command : kubectl get pods
+output : CrashLoopBackOff
+         RestartCount: increasing
+
+✅ REALTIME ROOT CAUSES (99% CASES)
+1️⃣ Liveness Probe is FAILING (MOST COMMON)
+📌 Important rule
+❌ Readiness probe NEVER restarts a pod
+✅ Liveness probe DOES restart the pod
+
+❌ WRONG Liveness Probe (causes restarts)
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+Problem
+--------
+App takes 30 seconds to start
+Liveness runs at 5 seconds
+Probe fails
+Kubernetes thinks app is dead
+Pod gets restarted repeatedly
+
+✅ CORRECT Liveness Probe
+livenessProbe:
+  httpGet:       ------------ Kubernetes sends an HTTP request to the container
+    path: /health ----------- URL endpoint Kubernetes calls EX: http://<pod-ip>:8080/health
+    port: 8080 --- Port where the app is listening inside the container Must match: App listening port,containerPort,❌ Wrong port = instant restarts
+  initialDelaySeconds: 40 ------ Kubernetes waits 40 seconds after container starts before checking liveness Why needed: App startup time
+  periodSeconds: 10 ----- Kubernetes checks liveness every 10 seconds
+  timeoutSeconds: 2   -----------------Kubernetes waits 2 seconds for response If app does not respond within 2s: Probe fails
+  failureThreshold: 3 ------ Number of consecutive failures allowed Here:
+                                                        1st fail → warning
+                                                        2nd fail → warning
+                                                        3rd fail → ❌ container killed
+                                                                                                  
+✔ App gets time to start
+✔ No random restarts
+
+🔍 How to confirm (realtime)
+COMMAND; kubectl describe pod <pod-name>
+You’ll see: Liveness probe failed: HTTP probe failed
+            Killing container
+
+2️⃣ Resource Limits (OOMKilled) – VERY COMMON
+❌ WRONG (low memory limit)
+resources:
+  limits:
+    memory: "256Mi"
+Problem
+---------
+App uses more memory
+Kernel kills container
+Pod restarts
+Appears “random”
+
+✅ CORRECT
+resources:
+  requests:
+    memory: "512Mi"
+  limits:
+    memory: "1Gi"
+
+🧠 FULL REALTIME FLOW (VERY IMPORTANT)
+
+Pod starts
+↓
+Wait 40 seconds
+↓
+Send HTTP GET /health every 10 sec
+↓
+If response not received in 2 sec → failure
+↓
+If fails 3 times continuously → restart pod
+
+
+
+
 
 
 
