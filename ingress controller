@@ -1,0 +1,253 @@
+                             INGRESS CONTROLLER
+                             ------------------
+An Ingress Controller is a Kubernetes component that:
+Exposes multiple services to the internet
+Uses one Load Balancer
+Routes traffic based on URL path or domain
+Acts like a reverse proxy (NGINX) for Kubernetes
+👉 Without an ingress controller, every microservice needs its own LoadBalancer (very costly).
+
+🔹 Why Ingress Controller is Used (Real-Time)
+Without Ingress
+---------------
+10 services → 10 LoadBalancers	
+High AWS cost	
+No path routing
+Hard to manage	
+
+	With Ingress
+  -----------
+10 services → 1 LoadBalancer
+Low cost
+Path & domain routing
+Centralized control
+
+                    to install nginx ingress controller
+                    ----------------------------------
+1️⃣ Add Helm Repo
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+2️⃣ Install Ingress Controller
+
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --create-namespace
+
+  3️⃣ Verify
+
+kubectl get pods -n ingress-nginx
+kubectl get svc -n ingress-nginx
+
+🔹 How Kubernetes Automatically Creates LoadBalancer
+❓ We never wrote a LoadBalancer YAML. How did it come?
+✔ Ingress controller includes this service:
+kind: Service
+type: LoadBalancer
+
+Kubernetes:
+Talks to cloud provider
+Creates LB automatically
+Attaches it to ingress pods
+
+🔹 DNS Mapping (Real-Time)
+Once EXTERNAL-IP is ready:
+app.company.com → LoadBalancer IP
+
+🔹 CASE 1: Buy a New Domain in Route 53 (Beginner / Demo)
+Example domain:
+company.com
+
+🟢 Step 1: Open Route 53
+AWS Console → Search Route 53
+Amazon Route 53
+🟢 Step 2: Register a Domain
+Route 53 → Registered domains → Register domain
+🟢 Step 3: Search Domain Name
+Type:
+company.com
+If available → select it → continue
+🟢 Step 4: Fill Contact Details
+Owner name
+Email
+Address
+(AWS requires this for domain registration)
+🟢 Step 5: Pay & Register
+Cost ~ ₹800–₹1,200/year
+Finish payment
+⏳ Takes 5–10 minutes
+🟢 Step 6: Hosted Zone Created Automatically ✅
+After domain registration:
+company.com
+
+➡ Route 53 automatically creates a Hosted Zone
+Now you can select your domain 🎉
+🔹 CASE 2: Domain Bought Outside (REAL-TIME COMPANY SCENARIO)
+Most companies already have a domain.
+Example:
+company.com (bought from GoDaddy)
+
+🟢 Step 1: Create Hosted Zone in Route 53
+Route 53 → Hosted zones → Create hosted zone
+Fill:
+Field	Value
+Domain name	company.com
+Type	Public hosted zone
+Click Create
+
+🟢 Step 2: Copy Name Servers (IMPORTANT)
+After creation, Route 53 gives 4 NS records like:
+ns-123.awsdns-45.com
+ns-678.awsdns-90.net
+
+🟢 Step 3: Update Name Servers in Domain Provider
+Go to GoDaddy / Namecheap → DNS settings
+Replace existing name servers with:
+Route 53 NS records
+⏳ DNS propagation: 5–30 minutes (sometimes 24 hrs)
+
+🟢 Step 4: Domain Now Managed by Route 53 ✅
+Now when you open:
+Route 53 → Hosted zones
+You will see:
+company.com
+This is what “Select your domain” means.
+
+🔹 After Domain Exists → Add Load Balancer
+Now you can create:
+app.company.com
+By adding:
+Record type: A
+Alias: ON
+Target: Ingress Load Balancer
+(This is what we explained earlier)
+
+🔹 Visual Flow (Easy to Remember)
+Buy/Create Domain
+ ↓
+Hosted Zone in Route 53
+ ↓
+Create DNS Record (app.company.com)
+ ↓
+Attach Load Balancer
+
+🔹 Interview Questions (Very Common)
+Q: What is a Hosted Zone?
+
+A: A container in Route 53 that holds DNS records for a domain.
+
+Q: Can Kubernetes create a domain?
+
+A: ❌ No, domains are managed outside Kubernetes.
+
+Q: Who creates the domain in real projects?
+
+A: Cloud/IT team, DevOps uses it.
+
+🔹 One-Line Summary (MEMORIZE)
+
+First we create or import a domain into Route 53 as a hosted zone, then we attach the ingress load balancer using an A-Alias record.
+
+                              
+                                    Traffic Flow
+                                   -------------
+User → DNS → LoadBalancer → NGINX Ingress Controller → Services → Pods
+
+🔹 Example: 3 Microservices (Real-Time)
+We will deploy:
+user-service → /users
+order-service → /orders
+product-service → /products
+
+All accessed via:
+https://app.company.com
+
+                          Deployment YAML (User Service)
+                          -----------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deployment
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+      - name: user-container
+        image: myrepo/user-service:1.0
+        ports:
+        - containerPort: 8080
+                                                      Service YAML (User Service)
+                                                      ---------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: prod
+spec:
+  type: ClusterIP
+  selector:
+    app: user
+  ports:
+  - port: 80
+    targetPort: 8080
+    
+Why port 80 here?
+Service port (80) → Ingress talks to service
+targetPort (8080) → Container port
+✔ Ingress never talks to container directly
+
+NOTE;  same yml used for different services change as for requirements
+       ex: in deployment.yml chnage this  name: user-deployment   app: user  
+           in service.yml     change this  name: user-service     app: user
+           for order service replace order in place of user remaing all or same  for all microservices
+
+                                       Ingress YAML (One Ingress for All Services)
+                                       --------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod-ingress
+  namespace: prod
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: app.company.com
+    http:
+      paths:
+      - path: /users
+        pathType: Prefix
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 80
+
+      - path: /orders
+        pathType: Prefix
+        backend:
+          service:
+            name: order-service
+            port:
+              number: 80
+
+      - path: /products
+        pathType: Prefix
+        backend:
+          service:
+            name: product-service
+            port:
+              number: 80
+
+           
+  
