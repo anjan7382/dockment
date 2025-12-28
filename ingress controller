@@ -248,6 +248,103 @@ spec:
             name: product-service
             port:
               number: 80
+                                          Ingress with Let’s Encrypt (real-time)
+                                           --------------------------------------
+STEP-BY-STEP: INSTALL cert-manager (PRODUCTION WAY)
 
-           
+🟢 Step 1: Check Kubernetes version
+kubectl version --short
+✔ Kubernetes 1.19+ recommended
+
+🟢 Step 2: Install cert-manager CRDs (MANDATORY)
+command; kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+CRDs define:
+Certificate
+Issuer
+ClusterIssuer
+
+🟢 Step 3: Create cert-manager namespace
+kubectl create namespace cert-manager
+
+🟢 Step 4: Install cert-manager (Official YAML)
+command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+This installs:
+cert-manager controller
+webhook
+cainjector
+
+🟢 Step 5: Verify cert-manager pods
+command: kubectl get pods -n cert-manager
+
+Expected:
+cert-manager-xxxxx         Running
+cert-manager-webhook-xxxxx Running
+cert-manager-cainjector    Running
+✔ If all are Running → installation successful
+
+STEP-BY-STEP: CONFIGURE LET’S ENCRYPT
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    email: devops@company.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+Apply it: kubectl apply -f clusterissuer.yaml
+
+🟢 Step 7: Verify ClusterIssuer
+command; kubectl get clusterissuer
+Expected:
+letsencrypt-prod   READY=True
+
+                         STEP-BY-STEP: USE CERTIFICATE IN INGRESS
+------------------------------------------------------------------------------------
+Step 8: Ingress with TLS (Real-Time YAML)
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod-ingress
+  namespace: prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - app.company.com
+    secretName: app-tls
+  rules:
+  - host: app.company.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 80
+
+🟢 Step 9: Verify Certificate
+kubectl get certificate -n prod
+kubectl get secret app-tls -n prod
+Expected:
+Certificate READY=True
+
+🟢 Step 10: Test HTTPS
+Open browser:
+https://app.company.com
+
+✔ Green lock 🔒
+✔ Valid Let’s Encrypt certificate
+✔ Auto-renew every 90 days
   
