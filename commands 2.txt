@@ -1,7 +1,8 @@
                     IMPORTANT COMMAND
                    ___________________
 aws sts get-caller-identity : aws sts get-caller-identity is a verification command used to check who you are in AWS right now.
-It tells you which IAM user or IAM role you are currently logged in as.
+                              It tells you which IAM user or IAM role you are currently logged in as.
+
 ex: output
 {
   "UserId": "AROAXXXXXX:i-0d1ec94b2ba4ef5dd",
@@ -462,6 +463,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
