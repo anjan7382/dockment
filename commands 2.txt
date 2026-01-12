@@ -1,18 +1,74 @@
                            SANDBOX ENVIRONMENT
                           -----------------------
 Sandbox (SEPERATE AWS ACCOUNT)is used to test the application and its infrastructure in an isolated environment.
+“Isolated means environments are logically or physically separated so failures or changes in one do not impact others.”
+                               “Isolated = safe separation.”
                                    OR
 “Sandbox is used to test application and infrastructure changes safely before moving to dev/QA/UAT.”
+                                   OR
+“Sandbox is an isolated non-production environment used to test applications, infrastructure, and CI/CD changes without impacting production.”
+NOTE: docker imqage used in sandbox env same image is used in DEV,QA,UAT,PRODUCTION
+
+TO SEND A DOCKER IMAGE FROM ONE AWS ACCOUNT (SANDBOX) TO ANOTHER AWS ACCOUNT ( DEV,QA,UAT,PROD)
+-----------------------------------------------------------------------------------------------
+You move Docker images between AWS accounts using Amazon ECR with cross-account access OR by re-tag & push.
+Sandbox AWS Account (ECR)
+        ↓
+Dev / QA / UAT AWS Account (ECR)
+        ↓
+Production AWS Account (ECR)
+
+Method 1: Pull from one account & push to another (most used)
+--------------------------------------------------------------
+Always run before ECR work:
+COMMAND: aws sts get-caller-identity
+
+Commands to run in SANDBOX account;
+----------------------------------
+1️⃣ Set AWS CLI to Sandbox account
+
+1.aws configure --profile sandbox
+  export AWS_PROFILE=sandbox
+Verify: 
+-----
+2. aws sts get-caller-identity
+
+2️⃣ Login to Sandbox ECR
+COMMAND; aws ecr get-login-password --region ap-south-1 \
+         | docker login --username AWS --password-stdin \
+          111111111111.dkr.ecr.ap-south-1.amazonaws.com
+3️⃣ Pull image from Sandbox ECR
+COMMAND; docker pull 111111111111.dkr.ecr.ap-south-1.amazonaws.com/myapp:1.0
+✅ Done with Sandbox account
+
+✅ Commands to run in TARGET account (Dev / QA / UAT / Prod)
+4️⃣ Switch AWS CLI to Target account
+COMMAND: aws configure --profile target
+         export AWS_PROFILE=target
+Verify:
+COMMAND: aws sts get-caller-identity
+5️⃣ Login to Target ECR
+COMMAND: aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 
+222222222222.dkr.ecr.ap-south-1.amazonaws.com
+
+6️⃣ Retag image for Target account
+COMMAND:docker tag 111111111111.dkr.ecr.ap-south-1.amazonaws.com/myapp:1.0 \
+222222222222.dkr.ecr.ap-south-1.amazonaws.com/myapp:1.0
+7️⃣ Push image to Target ECR
+COMMAND: docker push 222222222222.dkr.ecr.ap-south-1.amazonaws.com/myapp:1.0
 
 
-
-
+REALTIME COMMON STRUCTURE
+---------------------------
+AWS Account 1 → Sandbox
+AWS Account 2 → Dev / QA / UAT
+AWS Account 3 → Production
 
 
                     IMPORTANT COMMAND
                    ___________________
 aws sts get-caller-identity : aws sts get-caller-identity is a verification command used to check who you are in AWS right now.
-                              It tells you which IAM user or IAM role you are currently logged in as.
+It tells you which IAM user or IAM role you are currently logged in as.
 
 ex: output
 {
@@ -474,6 +530,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
