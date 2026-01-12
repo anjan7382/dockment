@@ -1,3 +1,14 @@
+                           SANDBOX ENVIRONMENT
+                          -----------------------
+Sandbox (SEPERATE AWS ACCOUNT)is used to test the application and its infrastructure in an isolated environment.
+                                   OR
+“Sandbox is used to test application and infrastructure changes safely before moving to dev/QA/UAT.”
+
+
+
+
+
+
                     IMPORTANT COMMAND
                    ___________________
 aws sts get-caller-identity : aws sts get-caller-identity is a verification command used to check who you are in AWS right now.
@@ -463,6 +474,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
