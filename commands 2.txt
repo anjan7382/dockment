@@ -7,7 +7,14 @@ Sandbox (SEPERATE AWS ACCOUNT)is used to test the application and its infrastruc
 “Sandbox is used to test application and infrastructure changes safely before moving to dev/QA/UAT.”
                                    OR
 “Sandbox is an isolated non-production environment used to test applications, infrastructure, and CI/CD changes without impacting production.”
-NOTE: docker imqage used in sandbox env same image is used in DEV,QA,UAT,PRODUCTION
+
+REALTIME COMMON STRUCTURE
+---------------------------
+AWS Account 1 → Sandbox
+AWS Account 2 → Dev / QA / UAT
+AWS Account 3 → Production
+
+NOTE: docker image used in sandbox env same image is used in DEV,QA,UAT,PRODUCTION
 
 TO SEND A DOCKER IMAGE FROM ONE AWS ACCOUNT (SANDBOX) TO ANOTHER AWS ACCOUNT ( DEV,QA,UAT,PROD)
 -----------------------------------------------------------------------------------------------
@@ -56,13 +63,6 @@ COMMAND:docker tag 111111111111.dkr.ecr.ap-south-1.amazonaws.com/myapp:1.0 \
 222222222222.dkr.ecr.ap-south-1.amazonaws.com/myapp:1.0
 7️⃣ Push image to Target ECR
 COMMAND: docker push 222222222222.dkr.ecr.ap-south-1.amazonaws.com/myapp:1.0
-
-
-REALTIME COMMON STRUCTURE
----------------------------
-AWS Account 1 → Sandbox
-AWS Account 2 → Dev / QA / UAT
-AWS Account 3 → Production
 
 
                     IMPORTANT COMMAND
@@ -530,6 +530,7 @@ handlers: it is used when the service want to be restart in playbook.
                                              
 
   
+
 
 
 
