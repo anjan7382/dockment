@@ -1,0 +1,24 @@
+Install eksctl on Linux (Amazon Linux / Ubuntu) — Recommended for Jump Server
+-------------------------------------------------------------------------------
+commands: curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" -o eksctl.tar.gz
+          tar -xzf eksctl.tar.gz
+          sudo mv eksctl /usr/local/bin
+          eksctl version
+If it shows version → Installed successfully
+After Installing (Very Important)
+You must also install:
+1️⃣ AWS CLI
+command: sudo yum install awscli -y   # Amazon Linux
+Configure it: 
+command; aws configure
+Since eksctl is working, make sure:
+RUN command: aws sts get-caller-identity
+If it shows your account ID → Good
+
+to install kubectl
+----------------------
+commands: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+          kubectl version --client
+          
